@@ -1,0 +1,28 @@
+{
+	"folders":
+		[
+			{
+				"id": "folder1", "name": "Eins", "dataurl": "data/forum1.json", "expanded": false, "children":
+					[
+						{"id": "folder11", "name": "eins-Eins", "dataurl": "data/forum1.json", "expanded": false},
+						{"id": "folder12", "name": "eins-Zwei", "dataurl": "data/forum2.json", "expanded": false}
+					]
+			},
+			{"id": "folder2", "name": "Zwei", "dataurl": "data/forum2.json", "expanded": false}
+		],
+	
+	"settings":
+		{
+			"title": "Simulated test forums",
+			"autoMarkRead": true,
+			"showSender": true,
+			"showDate": true,
+			"showScore": true,
+			"allowReply": true,
+			"allowVoting": true,
+			"allowInterest": true,
+			"readOnExpand": false,
+			"textsurl": "data/text.json"
+		}
+	
+}

@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="jsreader.css">
+<style> /* main screen layout */
+body {
+	background-color:#d4d0c8;
+	margin: 0;
+}
+
+#header { position: absolute; top: 5px; height: 40px; left: 15px; right: 130px; }
+#loginbutton { position: absolute; right: 0px; top: 0px; }
+#fullcontainer { position: absolute; top: 50px; left: 5px; right: 5px; bottom: 5px; }
+#foldercontainer { position: absolute; left: 0px; top: 0px; right: 75%; bottom: 0px; border-right: 5px solid transparent; }
+#listcontainer { position: absolute; top: 0px; right: 0px; left: 25%; bottom: 65%; border-bottom: 5px solid transparent; }
+#viewcontainer { position: absolute; bottom: 0px; right: 0px; width: 75%; top: 35%; }
+
+</style>
+<title>JSReader Demo</title>
+</head>
+
+
+<body>
+
+<!--<div id="loginbutton"><img src="../echo/piratenid/button-login.png"></div>-->
+<div id="header">
+	<h1 id="maintitle" class="maintitle">Daten werden geladen...</h1>
+</div>
+
+<div id="fullcontainer">
+
+<div id="foldercontainer">
+	<div id="folderpane" class="folderpane"> </div>
+</div>
+
+<div id="listcontainer">
+	<div id="listpane" class="listpane"></div>
+</div>
+
+<div id="viewcontainer">
+	<div id="viewpane" class="viewpane">
+
+	</div>
+</div>
+
+</div>
+<script src="jsreader.js"></script>
+<script>
+
+var sys = new MessageSystem(
+		document.getElementById("maintitle"),
+		document.getElementById("folderpane"),
+		document.getElementById("listpane"),
+		document.getElementById("viewpane"),
+		"user1234"
+	);
+
+sys.init("data/main.json");
+
+
+</script>
+
+</body>
+</html>

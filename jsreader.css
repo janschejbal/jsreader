@@ -1,0 +1,315 @@
+﻿
+.maintitle {
+	margin: 0px;
+	font-family: sans-serif;
+	width: 100%;
+	text-overflow: ellipsis;
+	white-space:nowrap;
+	overflow: hidden;
+}
+
+.listpane {
+	background-color: white;
+	width: 100%;
+	height: 100%;
+	overflow-y: scroll;
+}
+
+.folderpane {
+	background-color: white;
+	width: 100%;
+	height: 100%;
+	overflow-y: scroll;
+	overflow-x: auto;
+}
+
+.msgline {
+	/*background-color:#dfd;*/
+	/*height: 18px;*/
+	font-family: Tahoma,"Wine Tahoma",Kalimati,Geneva,sans-serif;
+	font-size: 8pt;
+	font-weight: bold;
+	clear: both;
+	position: relative; /* for later "position: absolute;" relative to this*/
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	cursor: default;
+}
+
+.msgline.read, .msgline.folder {
+	font-weight: normal;
+}
+
+.msgline.read.collapsed.unreadchildren {
+	text-decoration: underline;
+}
+
+.listpane>.msgline.collapsed {
+	background-color: #f9f7f5;
+}
+
+.listpane>.msgline.collapsed.selected, .msgline.selected {
+	background-color: #127;
+	color: white;
+}
+
+
+.msgline.selected.folder {
+	font-weight: bold;
+	background-color: #bbb;
+	color: black;
+}
+
+.msgline .part {
+	overflow: hidden;
+	/*border-left: 1px dotted #ccc;*/
+	text-overflow: ellipsis;
+	height: 14px;
+	float: left;
+	white-space:nowrap;
+	text-decoration: inherit;
+	padding: 2px;
+}
+
+.msgline .part.icon {
+	height: 16px;
+	width: 16px;
+	padding: 1px;
+}
+
+.msgline .first {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 14px;
+	white-space:nowrap;
+	padding: 2px;
+}
+.msgline .msginfo {
+	float: right;
+	text-decoration: inherit;
+	/*width: 342px;*/
+	/*background-color: #ddf;*/
+}
+.msgline .children {
+	padding-left: 16px;
+	color: #000;
+	background-color: #fff;
+	text-decoration: none;
+	position: relative; /* for dotted lines */
+}
+
+
+.msginfo .sender { width: 125px; }
+.msginfo .date { width: 110px; }
+.msginfo .score { width: 40px; text-align: right; }
+.msginfo .score.pos { color: #080; }
+.msginfo .score.neg { color: #a00; }
+
+
+.msgline.collapsed .children {
+	display: none;
+}
+
+.msgline .readbox {
+	/*ICON:read-off*/	background: url(icons16.png) no-repeat -41px -1px;
+}
+.msgline.read>.msginfo>.readbox {
+	/*ICON:read-on*/	background: url(icons16.png) no-repeat -61px -1px;
+}
+
+
+.msgline .starbox {
+	/*ICON:star-off*/	background: url(icons16.png) no-repeat -21px -1px;
+}
+.msgline.starred>.msginfo>.starbox {
+	/*ICON:star-on*/	background: url(icons16.png) no-repeat -1px -1px;
+}
+
+
+.msgline.upvoted>.msginfo>.votebox {
+	/*ICON:vote-plus*/	background: url(icons16.png) no-repeat -81px -1px;
+}
+.msgline.downvoted>.msginfo>.votebox {
+	/*ICON:vote-minus*/	background: url(icons16.png) no-repeat -101px -1px;
+}
+
+.msgline.haschildren>.expandbox {
+	position: relative; /* for z-index */
+	z-index: 1; /* cover up tree lines */
+	/*ICON:tree-close*/	background: url(icons16.png) no-repeat -141px -1px;
+}
+.msgline.haschildren.collapsed>.expandbox {
+	/*ICON:tree-open*/	background: url(icons16.png) no-repeat -121px -1px;
+}
+
+.msgline.own {
+	color: #080;
+}
+
+.msgline.collapsed.ownchildren {
+	text-shadow: rgba(0,255,0,0.4) 0px 0px 5px;	
+}
+
+.msgline.watched {
+	color: #00b;
+}
+
+.msgline.ignored {
+	text-decoration: line-through;
+	color: #aaa;
+}
+
+.msgline.autoignored {
+	color: #aaa;
+}
+
+.listpane>.msgline>.dotsh, .folderpane>.msgline>.dotsh {
+	display: none;
+}
+
+.msgline .dotsh {
+	top: 8px;
+	left: -8px;
+	position: absolute;
+	height: 1px;
+	width: 11px;
+	border-top: dotted 1px gray;
+}
+
+.msgline .dotsv {
+	top: -8px;
+	left: -8px;
+	position: absolute;
+	height: 17px;
+	width: 1px;
+	border-left: dotted 1px gray;
+}
+
+.msgline .children .dotsvc {
+	top: -9px;
+	left: -8px;
+	position: absolute;
+	height: 100%;
+	width: 1px;
+	border-left: dotted 1px gray;
+}
+
+.msgline:last-child>.children>.dotsvc {
+	display: none;
+}
+
+.viewpane {
+	width: 100%;
+	height: 100%;
+	background-color: white;
+	font-family: Arial, sans-serif;
+	overflow-x: hidden; /*just in case*/
+}
+
+.viewpane .header {
+	font-family: Tahoma,"Wine Tahoma",Kalimati,Geneva,sans-serif;
+	background-color: #eee;
+	font-size: 9pt;
+	padding: 8px;
+	border-bottom: 1px solid gray;
+	height: 36px;
+	overflow: auto;
+}
+
+.viewpane .header .actionbar {
+	float: right;
+}
+
+.viewpane .header .subject {
+	font-weight: bold;
+	margin-bottom: 3px;
+}
+
+.viewpane .header .date {
+	float: left;
+	margin-right: 10px;
+}
+
+.viewpane .actionbar {
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	cursor: default;
+	margin: 0 0 0 10px;
+}
+
+.viewpane .actionbar .button {
+	background-color: #d4d0c8;
+	padding: 5px;
+	border: 1px outset gray;
+	margin: 3px;
+	float: left;
+}
+
+.viewpane .actionbar .doublebutton {
+	float: left;
+	height: 40px;
+	margin: -2px 3px;
+	background-color: #d4d0c8; /*individual button background is overwritten by icon*/
+}
+
+.viewpane .actionbar .iconbutton {
+	width: 16px;
+	height: 16px;
+	border: 1px outset gray;
+	margin: 0px;
+	padding: 1px;
+}
+
+.viewpane .actionbar .button.reply .icon {
+	width: 16px;
+	height: 16px;
+	float: left;
+	margin-right: 5px;
+	/*ICON:reply*/	background: url(icons16.png) no-repeat -161px -1px;
+}
+
+.viewpane .actionbar .iconbutton.vote.up {
+	/*ICON:vote-plus*/	background: url(icons16.png) no-repeat -81px -1px;
+}
+
+
+.viewpane .actionbar .iconbutton.vote.down {
+	/*ICON:vote-minus*/	background: url(icons16.png) no-repeat -101px -1px;
+}
+
+.viewpane .actionbar .iconbutton.interest.up {
+	/*ICON:watch*/	background: url(icons16.png) no-repeat -201px -1px;
+}
+
+.viewpane .actionbar .iconbutton.interest.down {
+	/*ICON:ignore*/	background: url(icons16.png) no-repeat -181px -1px;
+}
+
+.viewpane.upvoted .actionbar .iconbutton.vote.up,
+.viewpane.downvoted .actionbar .iconbutton.vote.down,
+.viewpane.watched .actionbar .iconbutton.interest.up,
+.viewpane.ignored .actionbar .iconbutton.interest.down
+{
+	border: 1px inset gray;
+}
+
+.viewpane .content {
+	padding: 10px;
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	top: 52px;
+	overflow-x: auto;
+	overflow-y: scroll;
+	
+}
+
+
+

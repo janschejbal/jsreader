@@ -1,0 +1,11 @@
+star-on
+star-off
+read-off
+read-on
+vote-plus
+vote-minus
+tree-open
+tree-close
+reply
+ignore
+watch

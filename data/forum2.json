@@ -1,0 +1,19 @@
+﻿{
+	"messages": [
+
+		{ "id": "msg1", "subject": "Message 1", "sender": "Troll Brückenheimer", "date": "2011-11-11 11:11", "score": 32, "children": ["msg11", "msg12", "msg13"], "text": null}, 
+		{ "id": "msg2", "subject": "This is the Message Number Two", "sender": "Troll Brückenheimer", "date": "2011-11-11 11:11", "score": -9001, "children": ["msg21"], "text": "msg2 text, provided directly", "attributes": {"vote": -1, "read": true, "starred": true} },
+		{ "id": "msg11", "subject": "msg 1.1", "sender": "Troll Brückenheimer", "date": "2011-11-11 11:11", "score": 0, "children": [], "text": null},
+		{ "id": "msg12", "subject": "msg 1.2 with a very extremely long title that should certainly cause at least some trouble somewhere, I hope. With umlauts öäüß and stuff!", "sender": "Troll Brückenheimer", "date": "2011-11-11 11:11", "score": -9001, "children": ["msg121","msg122"], "text": "msg1.2 text, provided directly"},
+		{ "id": "msg121", "subject": "Message 1.2.1", "sender": "Troll Brückenheimer", "date": "2011-11-11 11:11", "score": 15, "children": [], "text": null},
+		{ "id": "msg122", "subject": "Message 1.2.2", "sender": "user1234", "date": "2011-11-11 11:11", "score": -3, "children": [], "text": null},
+		{ "id": "msg13", "subject": "Message 1.3", "sender": "Troll Brückenheimer", "date": "2011-11-11 11:11", "score": -7, "children": [], "text": null},
+		{ "id": "msg21", "subject": "Message 2.1", "sender": "Troll Brückenheimer", "date": "2011-11-11 11:11", "score": 9001, "children": [], "text": null}
+	],
+	
+	"rootMessages": ["msg2","msg1"],
+	
+	"settings":
+		{
+		}
+}
