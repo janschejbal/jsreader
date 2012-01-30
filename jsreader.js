@@ -299,6 +299,7 @@ function FolderContentManager(msgsys)
 				thisobj.fetchTextsHandler(xmlHttp.responseText);
 			}
 		}
+		xmlHttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 		xmlHttp.send("ids=" + encodeURIComponent(msglist));
 	}
 	
