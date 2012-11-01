@@ -18,22 +18,35 @@ var MessageHelper = {
 			var cloned = {}
 			for (var name in orig) cloned[name] = orig[name];
 			return cloned;
-		}
+		},
+	
+	fetch: function(url, handler) {
+		var xmlHttp = new XMLHttpRequest();
+		xmlHttp.open('GET', url, true);
+		xmlHttp.onreadystatechange = function() {
+			if (xmlHttp.readyState == 4) {
+				handler(xmlHttp.responseText);
+			}
+		};
+		xmlHttp.send(null);
+	}
+	
 };
 
 function MessageAttributeMemoryStore() {
 	this.store = {}
 	
 	try {
-		if (localStorage.getItem("antragsviewerdata-testbpt112")) this.store = JSON.parse(localStorage.getItem("antragsviewerdata-testbpt112"));
+		if (localStorage.getItem("antragsviewerdata-bpt121")) this.store = JSON.parse(localStorage.getItem("antragsviewerdata-bpt121"));
 	} catch (e) {} // ignore
 	
 	this.setAttribute = function(msgid, name, value) {
 		if (!this.store[msgid]) this.store[msgid] = {};
 		this.store[msgid][name] = value;
 		try {
-			localStorage.setItem("antragsviewerdata-testbpt112", JSON.stringify(this.store));
+			localStorage.setItem("antragsviewerdata-bpt121", JSON.stringify(this.store));
 		} catch (e) {} // ignore
+		if (this.onAttributeChange) this.onAttributeChange(msgid, name, value);
 	}
 	
 	this.getAttributes = function(msgid) {
@@ -45,15 +58,17 @@ function MessageAttributeMemoryStore() {
 	}
 }
 
-function MessageSystem(maintitle, folderpane, listpane, viewpane, currentuser) {
+function MessageSystem(maintitle, folderpane, listpane, viewpane, currentuser, urlprefix) {
 	var thisobj = this; // use in handlers where "this" is replaced to point to event source
 
 	this.maintitleelement = maintitle;
 	this.folderpane = folderpane;
 	this.listpane = listpane;
 	this.viewpane = viewpane;
-	this.currentuser = currentuser;
+	this.currentuser = currentuser ? currentuser : "Q0CxQ5xwEK3d1uBMCXbsQ0CxQ5xwEK3d1uBMCXbs"; // random, non-matching string
+	this.urlprefix = urlprefix ? urlprefix : "";
 	
+	this.folderRegistry = {};
 	this.selected = null;
 	this.foldercontentmanager = null;
 	
@@ -61,11 +76,8 @@ function MessageSystem(maintitle, folderpane, listpane, viewpane, currentuser) {
 	
 	this.init = function(dataurl) {
 		this.folderpane.innerHTML = 'Loading...';
-		var xmlHttp = new XMLHttpRequest();
-		xmlHttp.open('GET', dataurl, true);
-		xmlHttp.onreadystatechange = function () {
-			if (xmlHttp.readyState == 4) {
-				var responseJSON = JSON.parse(xmlHttp.responseText);
+		MessageHelper.fetch(this.urlprefix + dataurl, function (response) {
+				var responseJSON = JSON.parse(response);
 				thisobj.folders = responseJSON.folders;
 				thisobj.settings = {
 					title: "Message view",
@@ -78,14 +90,19 @@ function MessageSystem(maintitle, folderpane, listpane, viewpane, currentuser) {
 					allowInterest: false,
 					readOnExpand: false
 				}
+				
+				if (responseJSON.searchindex) {
+					MessageHelper.fetch(thisobj.urlprefix+responseJSON.searchindex, function (response) {
+						thisobj.searchindex = JSON.parse(response);
+					});
+				}
+				
 				for (var name in responseJSON.settings) {
 					thisobj.settings[name] = responseJSON.settings[name];
 				}
 				thisobj.setTitle(thisobj.settings.title);
 				if (thisobj.folders) thisobj.renderFolders();
-			}
-		};
-		xmlHttp.send(null);
+			});
 	}
 	
 	this.setTitle = function(title) {
@@ -101,7 +118,12 @@ function MessageSystem(maintitle, folderpane, listpane, viewpane, currentuser) {
 		}
 	}
 	
-	this.selectFolder = function(folder) {
+	this.selectFolder = function(folder, msgid) {
+		if (typeof folder == "string") {
+			folder = this.folderindex[folder];
+			if (!folder) folder = false;
+		}
+	
 		if (this.selected) {
 			this.selected.selected = false;
 			this.selected.updateClass();
@@ -111,7 +133,34 @@ function MessageSystem(maintitle, folderpane, listpane, viewpane, currentuser) {
 			folder.selected = true;
 			folder.updateClass();
 			this.foldercontentmanager = new FolderContentManager(this);
-			this.foldercontentmanager.init(folder.dataurl);
+			this.foldercontentmanager.init(folder.dataurl, msgid);
+		}
+	}
+	
+	this.findMessage = function(id) {
+		var parts = id.split(":");
+		if (parts.length > 2) return false;
+		
+		var folder = false;
+		
+		if (parts.length == 2) {
+			folder = this.folderRegistry[parts[0]];
+			id = parts[1];
+		} else { // id only
+			if (!this.searchindex) return false;
+			var foldername = this.searchindex[id];
+			if (!foldername) return false;
+			folder = this.folderRegistry[foldername];
+		}
+		
+		if (!folder) return false;
+		
+		if (folder == this.selected) {
+			this.foldercontentmanager.setSelected(id);
+			return true;
+		} else {
+			this.selectFolder(folder, id);
+			return true;
 		}
 	}
 }
@@ -121,9 +170,14 @@ function Folder(jsonFolder, msgsys) {
 	
 	this.msgsys = msgsys;
 
+	
     this.id = jsonFolder.id;
 	this.name = jsonFolder.name;
 	this.dataurl = jsonFolder.dataurl;
+
+	// Register folder
+	this.msgsys.folderRegistry[this.id] = this;
+	
 	this.children = [];
 	if (jsonFolder.children) {
 		for (var i = 0; i < jsonFolder.children.length; i++) {
@@ -190,19 +244,19 @@ function FolderContentManager(msgsys)
 	
 	this.selected = null;
 	
-	this.init = function(dataurl) {
+	this.init = function(dataurl, initialMessage) {
 		msgsys.listpane.innerHTML = 'Loading...';
 		var xmlHttp = new XMLHttpRequest();
-		xmlHttp.open('GET', dataurl, true);
+		xmlHttp.open('GET', this.msgsys.urlprefix + dataurl, true);
 		xmlHttp.onreadystatechange = function () {
 			if (xmlHttp.readyState == 4) {
-				thisobj.init2(xmlHttp.responseText);
+				thisobj.init2(xmlHttp.responseText, initialMessage);
 			}
 		};
 		xmlHttp.send(null);
 	}
 	
-	this.init2 = function(response) {
+	this.init2 = function(response, initialMessage) {
 		if (this.msgsys.foldercontentmanager != this) return;
 		
 		var responseJSON = JSON.parse(response);
@@ -242,6 +296,8 @@ function FolderContentManager(msgsys)
 		this.view.btnreply.style.display = 'none';
 		this.view.votebuttons.style.display = 'none';
 		this.view.interestbuttons.style.display = 'none';
+		
+		this.setSelected(initialMessage);
 	}
 	
 	this.loadMessage = function(msg) {
@@ -265,6 +321,11 @@ function FolderContentManager(msgsys)
 	}
 	
 	this.setSelected = function(msg) {
+		if (typeof msg == "string") {
+			msg = this.messageRegistry[msg];
+			if (!msg) msg = false;
+		}
+	
 		if (this.selected) {
 			this.selected.selected = false;
 			this.selected.updateClass();
@@ -293,7 +354,7 @@ function FolderContentManager(msgsys)
 	this.fetchTexts = function(messages) {
 		var msglist = messages.join(",");
 		var xmlHttp = new XMLHttpRequest();
-		xmlHttp.open('POST', this.settings.textsurl, true);
+		xmlHttp.open('POST', this.msgsys.urlprefix + this.settings.textsurl, true);
 		xmlHttp.onreadystatechange = function () {
 			if (xmlHttp.readyState == 4) {
 				thisobj.fetchTextsHandler(xmlHttp.responseText);

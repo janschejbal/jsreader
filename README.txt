@@ -14,6 +14,9 @@ Usage:
   description JSON file
   
 File formats:
+  IDs are restricted to [0-9a-zA-Z-_] (e.g. base64url),
+  folders MAY use slashes or dots to indicate subfolder names.
+
   Main description JSON file:
     - folders: An array of folder objects, each consisting of
         id: string - unique folder id
